@@ -1,0 +1,43 @@
+import requests
+
+r=requests.get('https://www.vox.com/2018/9/25/17901082/trump-un-2018-speech-full-text')
+
+mydict={}
+
+r.encoding='utf8'
+
+data=str(r.text)
+
+import re
+
+def remove_tag(content):
+   cleanr =re.compile('<.*?>')
+   cleantext = re.sub(cleanr, '', content)
+   return cleantext
+
+data= remove_tag(data)
+
+begin=data.find('America is governed by')
+
+end=data.rfind('Applause.)')
+
+a=data[begin:end]
+
+a=a.replace(',',' ')
+a=a.replace('.',' ')
+a=a.replace("(", " ")
+a=a.replace(")", " ")
+a=a.replace("-–", " ")
+
+words= a.split()
+
+for i in words:
+    if i in mydict:
+        mydict[i] += 1
+
+    else: mydict[i]=1
+
+mydict2=list(sorted(mydict, key=mydict.__getitem__,reverse=True))
+mydict3=mydict2[0:20]
+for i in mydict3:
+    print(i,mydict[i])
